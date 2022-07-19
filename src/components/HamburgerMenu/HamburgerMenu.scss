@@ -1,0 +1,32 @@
+.HamburgerMenu{
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(100vw, 300px);
+    &__Menu{
+        display: flex;
+        flex-direction: column;
+        background-color: black;
+        height: 100%;
+        width: 100%;
+        transition: .2s ease-in-out;
+        transform: translateX(100%);
+        &-active{
+            transform: translateX(0);
+        }
+    }
+
+    &__Hamburger{
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 3;
+    }
+
+    &__SettingField{
+        display: flex;
+        color: white;
+    }
+}
+

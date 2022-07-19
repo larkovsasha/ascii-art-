@@ -1,25 +1,54 @@
-import logo from './logo.svg';
+import { useRef, useState } from 'react';
+import img from './images/aGuyHavingACupOfTea.JPG';
+import { useImageData } from './hooks/useImageData';
+import { Canvas } from './components/Canvas';
+import { createPixelsArray } from './utils/createPixelsArray';
 import './App.css';
+import { AppContextProvider, defaultValue } from './contexts/AppContext';
+import { HamburgerMenu } from './components/HamburgerMenu';
 
-function App() {
+export const App = () => {
+  const imageRef = useRef(null);
+  const [pixels, setPixels] = useState([]);
+  const [canvasSize, setCanvasSize] = useState({ cw: 0, ch: 0 });
+
+  const [charsDensity, setCharsDensity] = useState(6);
+  const [fontSize, setFontSize] = useState(4);
+
+  const handleImageLoad = () => {
+    const imgData = useImageData(imageRef);
+    const pixels = createPixelsArray(imgData);
+    const [cw, ch] = [
+      imageRef.current.naturalWidth,
+      imageRef.current.naturalHeight,
+    ];
+    setCanvasSize({ cw, ch });
+    setPixels(pixels);
+  };
+
+  const handleSettingsApply = (settings) => {
+    const { fontSize, charsDensity } = settings;
+
+    setCharsDensity(charsDensity);
+    setFontSize(fontSize);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppContextProvider value={defaultValue}>
+      <div className="App">
+        <img
+          style={{ display: 'none' }}
+          src={img}
+          ref={imageRef}
+          onLoad={handleImageLoad}
+        />
+        <Canvas
+          pixels={pixels}
+          size={canvasSize}
+          fontSize={fontSize}
+          charsDensity={charsDensity}
+        />
+        <HamburgerMenu onSettingsApply={handleSettingsApply} />
+      </div>
+    </AppContextProvider>
   );
-}
-
-export default App;
+};
